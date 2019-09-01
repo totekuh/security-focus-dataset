@@ -53,7 +53,6 @@ def start_parser(save_path, start_from_id=1, max_faulty_seqence=10):
                         pass
                 vulnerability['url'] = base_url + str(vulnerability['bugtraq_id'])
                 with open(save_path, mode='a') as json_file:
-                    # json.dump(vulnerability, json_file)
                     json_file.write(json.dumps(vulnerability))
                     json_file.write('\n')
                     saved_vulnerabilities += 1
