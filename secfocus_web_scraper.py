@@ -60,10 +60,6 @@ def start_parser(save_path, start_from_id=1, max_faulty_seqence=10):
 
 
 if __name__ == '__main__':
-    import pandas as pd
-    pd.set_option('display.max_rows', 500)
-    pd.set_option('display.max_columns', 500)
-    pd.set_option('display.width', 1000)
     start_parser(save_path="vulnerabilities.json",
                  start_from_id=1,
                  max_faulty_seqence=100)
