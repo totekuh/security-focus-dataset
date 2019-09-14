@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import json
 
+VULNERABILITIES_JSON_FILE = "/usr/share/exploitdb/vulnerabilities.json"
+
 
 def get_arguments():
     from argparse import ArgumentParser
@@ -9,10 +11,10 @@ def get_arguments():
     parser.add_argument('-s', '--search',
                         dest='search',
                         required=True,
-                        help='Search query')
+                        help='Search for vulnerabilities by it\'s title and software names')
     parser.add_argument('-f', '--file',
-                        default='/usr/share/exploitdb/vulnerabilities.json',
-                        help='A CSV file with scraped vulnerabilities',
+                        default=VULNERABILITIES_JSON_FILE,
+                        help='A CSV file with scraped vulnerabilities. Default is ' + VULNERABILITIES_JSON_FILE,
                         dest='file')
     parser.add_argument('-v', '--verbose',
                         action='store_true',
@@ -36,7 +38,6 @@ class Vuln:
         self.cve = fieldOrNone('cve')
         self.vulnerable_software = fieldOrNone('vulnerable')
 
-
     def printout(self, verbose):
         print(f"{self.id}. {self.title}")
         if self.url:
@@ -56,7 +57,7 @@ def search(search_query, file_name):
     matched_count = 0
     results = []
     for v in vulns:
-        if search_query.lower() in v['title'].lower():
+        if search_query.lower() in v['title'].lower() or search_query.lower() in str(v['vulnerable']).lower():
             matched_count += 1
             results.append(Vuln(matched_count, v))
     return results
