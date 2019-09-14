@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+from datetime import datetime
 
 VULNERABILITIES_JSON_FILE = "/usr/share/exploitdb/vulnerabilities.json"
 
@@ -34,6 +35,7 @@ class Vuln:
         self.id = id
         self.title = fieldOrNone('title')
         self.url = fieldOrNone('url')
+        self.published = fieldOrNone('published')
         # additional information
         self.cve = fieldOrNone('cve')
         self.vulnerable_software = fieldOrNone('vulnerable')
@@ -42,6 +44,9 @@ class Vuln:
         print(f"{self.id}. {self.title}")
         if self.url:
             print(self.url)
+        if self.published:
+            datetime_object = datetime.strptime(self.published, '%b %d %Y %I:%M%p')
+            print(datetime_object.strftime('%d/%m/%Y'))
         if verbose:
             if self.cve:
                 print(self.cve)
@@ -57,9 +62,15 @@ def search(search_query, file_name):
     matched_count = 0
     results = []
     for v in vulns:
-        if search_query.lower() in v['title'].lower() or search_query.lower() in str(v['vulnerable']).lower():
-            matched_count += 1
-            results.append(Vuln(matched_count, v))
+        formatted_query = search_query.lower()
+        if formatted_query.startswith('cve'):
+            if formatted_query in v['cve'].lower():
+                matched_count += 1
+                results.append(Vuln(matched_count, v))
+        else:
+            if formatted_query in v['title'].lower() or formatted_query in str(v['vulnerable']).lower():
+                matched_count += 1
+                results.append(Vuln(matched_count, v))
     return results
 
 
